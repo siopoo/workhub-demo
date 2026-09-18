@@ -1,0 +1,1 @@
+"""WorkHub backend application package."""
