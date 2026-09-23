@@ -44,3 +44,14 @@ export interface ComposePayload {
   body: string
   folder?: "sent" | "drafts"
 }
+
+export interface SkillCall {
+  name: string
+  arguments: Record<string, unknown>
+  result: Record<string, unknown>
+}
+
+export interface AgentResponse {
+  answer: string
+  tool_calls: SkillCall[]
+}

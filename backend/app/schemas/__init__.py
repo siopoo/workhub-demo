@@ -1,8 +1,11 @@
+from app.schemas.agent import AgentRequest, AgentResponse
 from app.schemas.contact import ContactRead, UserBrief
 from app.schemas.email import EmailCreate, EmailRead, EmailReply
 from app.schemas.message import MessageCreate, MessageRead
 
 __all__ = [
+    "AgentRequest",
+    "AgentResponse",
     "ContactRead",
     "EmailCreate",
     "EmailRead",

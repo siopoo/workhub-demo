@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import models  # noqa: F401
 from app.database import Base, build_engine, build_session_factory, default_database_url
-from app.routers import contacts, emails, messages
+from app.routers import agent, contacts, emails, messages
 from app.seed import seed_database
 
 
@@ -39,6 +39,7 @@ def create_app(database_url: Optional[str] = None) -> FastAPI:
     app.include_router(contacts.router)
     app.include_router(messages.router)
     app.include_router(emails.router)
+    app.include_router(agent.router)
 
     @app.get("/api/health", tags=["system"])
     def health_check():

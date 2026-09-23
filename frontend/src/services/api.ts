@@ -1,4 +1,4 @@
-import type { ComposePayload, Contact, Email, EmailFolder, Message } from "@/types"
+import type { AgentResponse, ComposePayload, Contact, Email, EmailFolder, Message } from "@/types"
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? ""
 
@@ -38,4 +38,9 @@ export const api = {
     }),
   deleteEmail: (emailId: number) =>
     request<void>(`/api/emails/${emailId}`, { method: "DELETE" }),
+  askAgent: (message: string) =>
+    request<AgentResponse>("/api/agent/chat", {
+      method: "POST",
+      body: JSON.stringify({ message }),
+    }),
 }

@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, joinedload
 
 from app.models import Email, User
@@ -26,6 +26,22 @@ class EmailService:
         else:
             statement = statement.where(Email.folder == normalized)
         return list(self.session.scalars(statement.order_by(Email.created_at.desc())).all())
+
+    def search_emails(self, query: str, limit: int = 10) -> list[Email]:
+        term = query.strip()
+        statement = (
+            self._with_people()
+            .where(
+                Email.folder != "trash",
+                or_(
+                    Email.subject.ilike(f"%{term}%"),
+                    Email.body.ilike(f"%{term}%"),
+                ),
+            )
+            .order_by(Email.created_at.desc())
+            .limit(limit)
+        )
+        return list(self.session.scalars(statement).all())
 
     def get_email(self, email_id: int) -> Email:
         email = self.session.scalar(self._with_people().where(Email.id == email_id))

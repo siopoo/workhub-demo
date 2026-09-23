@@ -1,9 +1,9 @@
-import { Mail, MessageCircleMore, Settings } from "lucide-react"
+import { Bot, Mail, MessageCircleMore, Settings } from "lucide-react"
 
 import { Avatar } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 
-export type WorkHubModule = "messages" | "email"
+export type WorkHubModule = "messages" | "email" | "assistant"
 
 export function PrimaryNav({
   activeModule,
@@ -15,6 +15,7 @@ export function PrimaryNav({
   const items = [
     { id: "messages" as const, label: "Messages", icon: MessageCircleMore },
     { id: "email" as const, label: "Email", icon: Mail },
+    { id: "assistant" as const, label: "AI Assistant", icon: Bot },
   ]
 
   return (
@@ -27,7 +28,7 @@ export function PrimaryNav({
           <button
             key={id}
             type="button"
-            aria-label={label === "Messages" ? "Messages" : "Email"}
+            aria-label={label}
             aria-current={activeModule === id ? "page" : undefined}
             onClick={() => onChange(id)}
             className={cn(

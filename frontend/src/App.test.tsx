@@ -43,6 +43,28 @@ describe("WorkHub", () => {
         if (url.includes("/api/conversations/2")) return Response.json([])
         if (url.includes("/api/emails?folder=inbox")) return Response.json(emails)
         if (url.endsWith("/api/emails/1")) return Response.json({ ...emails[0], is_read: true })
+        if (url.endsWith("/api/agent/chat") && init?.method === "POST") {
+          return Response.json({
+            answer: "John discussed the updated acceptance criteria.",
+            tool_calls: [
+              {
+                name: "search_messages",
+                arguments: { query: "acceptance criteria" },
+                result: {
+                  count: 1,
+                  messages: [
+                    {
+                      id: 12,
+                      sender: "John Smith",
+                      content: "I updated the acceptance criteria.",
+                      created_at: "2026-09-17T09:00:00",
+                    },
+                  ],
+                },
+              },
+            ],
+          })
+        }
         if (url.endsWith("/api/messages") && init?.method === "POST") {
           return Response.json(
             {
@@ -87,5 +109,26 @@ describe("WorkHub", () => {
       expect(screen.getByText("Can we review the WorkHub milestones on Monday afternoon?")).toBeInTheDocument()
     })
     expect(screen.getByRole("button", { name: "Reply" })).toBeInTheDocument()
+  })
+
+  it("shows the skill name, arguments, and returned business data", async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole("button", { name: "AI Assistant" }))
+    await user.type(
+      screen.getByPlaceholderText("Ask WorkHub to search messages or emails…"),
+      "Find chat messages about acceptance criteria.",
+    )
+    await user.click(screen.getByRole("button", { name: "Ask assistant" }))
+
+    expect(await screen.findByText("User Request")).toBeInTheDocument()
+    expect(screen.getByText("Called Skill")).toBeInTheDocument()
+    expect(screen.getByText("Arguments")).toBeInTheDocument()
+    expect(screen.getByText("Result / Summary")).toBeInTheDocument()
+    expect(await screen.findByText("search_messages")).toBeInTheDocument()
+    expect(screen.getByText(/"query": "acceptance criteria"/)).toBeInTheDocument()
+    expect(screen.getByText(/I updated the acceptance criteria/)).toBeInTheDocument()
+    expect(screen.getByText("John discussed the updated acceptance criteria.")).toBeInTheDocument()
   })
 })

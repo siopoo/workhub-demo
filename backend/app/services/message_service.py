@@ -98,3 +98,27 @@ class MessageService:
         return self.session.scalar(
             select(Message).options(joinedload(Message.sender)).where(Message.id == message.id)
         )
+
+    def search_messages(self, query: str, limit: int = 10) -> list[dict]:
+        messages = self.session.scalars(
+            select(Message)
+            .options(joinedload(Message.sender))
+            .where(
+                or_(
+                    Message.sender_id == CURRENT_USER_ID,
+                    Message.receiver_id == CURRENT_USER_ID,
+                ),
+                Message.content.ilike(f"%{query.strip()}%"),
+            )
+            .order_by(Message.created_at.desc())
+            .limit(limit)
+        ).all()
+        return [
+            {
+                "id": message.id,
+                "content": message.content,
+                "sender": message.sender.name,
+                "created_at": message.created_at.isoformat(),
+            }
+            for message in messages
+        ]
