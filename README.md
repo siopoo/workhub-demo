@@ -1,5 +1,7 @@
 # WorkHub Demo
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 > A lightweight enterprise collaboration demo featuring messaging, email, and an explainable AI Skills showcase.
 
 WorkHub is a portfolio-ready, desktop-first collaboration product inspired by modern team chat and mail clients. It keeps the original direct-messaging and local-email workflows intact, then demonstrates how those existing business capabilities can be exposed as reusable AI Skills.
